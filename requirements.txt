@@ -1,0 +1,8 @@
+pandas
+requests
+mysql-connector-python
+sqlalchemy
+google-cloud-bigquery
+google-auth
+streamlit
+plotly
