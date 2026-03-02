@@ -264,15 +264,3 @@ python run_pipeline.py
 - Production-ready structure  
 
 ---
-
-# 🎤 Interview Explanation
-
-> Built a complete ETL pipeline that extracts YouTube and news data, transforms it using Python, loads it into BigQuery and MySQL, and designs a Star Schema data warehouse to generate media performance insights.
-
----
-
-# 👨‍💻 Author
-
-**Bhupelli Pavankumar**  
-B.Tech – CSE (Data Science)  
-Hyderabad, Telangana  
