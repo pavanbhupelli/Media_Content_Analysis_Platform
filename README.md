@@ -1,55 +1,50 @@
-Media Content Analysis Platform
+# 📊 Media Content Analysis Platform
 
-PROJECT ARCHITECTURE (Exact Folder-Based Structure)
+![Python](https://img.shields.io/badge/Python-3.10+-blue)
+![BigQuery](https://img.shields.io/badge/Google-BigQuery-orange)
+![MySQL](https://img.shields.io/badge/Database-MySQL-blue)
+![Architecture](https://img.shields.io/badge/Data%20Model-Star%20Schema-green)
+![Status](https://img.shields.io/badge/Status-Production%20Ready-success)
 
-MEDIA-CONTENT-ANALYSIS-PLATFORM
-│
-├── config/                     → Configuration Layer
-│   ├── __init__.py
-│   ├── config.py               → API keys, DB configs
-│   └── gcp_credentials.json    → GCP authentication
-│
-├── data/                       → Data Storage Layer
-│   ├── raw/                    → Raw extracted data
-│   │   ├── news_raw.json
-│   │   ├── youtube_raw.csv
-│   │   └── news_category.json
-│   │
-│   └── processed/              → Cleaned & transformed data
-│       ├── news_cleaned.csv
-│       └── youtube_cleaned.csv
-│
-├── etl/                        → ETL Layer
-│   ├── extract_news.py
-│   ├── extract_youtube.py
-│   ├── transform_news.py
-│   ├── transform_youtube.py
-│   ├── load_bigquery.py
-│   └── load_mysql.py
-│
-├── warehouse/                  → Data Warehouse Layer
-│   ├── staging.sql
-│   ├── dimension_tables.sql
-│   ├── fact_tables.sql
-│   └── data_marts.sql
-│
-├── run_pipeline.py             → Pipeline Orchestration
-├── requirements.txt            → Dependencies
-├── .gitignore                  → Security control
-└── README.md                   → Documentation
+---
 
-OVERALL ARCHITECTURE FLOW (STEP-BY-STEP)
+## 📌 Project Overview
+
+The **Media Content Analysis Platform** is an end-to-end Data Engineering project designed to extract, transform, and analyze media content data from:
+
+- 🎥 YouTube Data API  
+- 📰 News JSON Dataset  
+
+The system processes raw data, performs cleaning and feature engineering, loads it into **Google BigQuery** and **MySQL**, and builds a **Star Schema Data Warehouse** to generate analytical insights such as:
+
+- Top performing videos  
+- Channel performance metrics  
+- Engagement analysis  
+
+---
+
+# 🏗️ Architecture Overview
+
+The project follows a **Layered ETL Architecture** combined with a **Star Schema Data Warehouse Model**.
+
+---
+
+## 🔄 Data Flow Architecture
+
+```
 YouTube API + News Dataset
         ↓
-Extraction (etl/)
+Extraction Layer
         ↓
-Raw Data (data/raw)
+Raw Data Storage
         ↓
-Transformation (etl/)
+Transformation Layer
         ↓
-Processed Data (data/processed)
+Processed Data
         ↓
-Loading (BigQuery + MySQL)
+Loading Layer
+        ↓
+BigQuery & MySQL
         ↓
 Staging Tables
         ↓
@@ -59,105 +54,225 @@ Fact Table
         ↓
 Data Marts
         ↓
-Analytics / Insights
+Analytics & Insights
+```
 
+---
 
-Step 1: Configuration Layer (config/)
+# 📂 Project Structure
 
-Stores API keys and database credentials.
+```
+MEDIA-CONTENT-ANALYSIS-PLATFORM
+│
+├── config/                     # Configuration Layer
+│   ├── config.py               # API keys & DB configs
+│   └── gcp_credentials.json    # GCP authentication
+│
+├── data/                       # Data Storage Layer
+│   ├── raw/                    # Raw extracted data
+│   │   ├── news_raw.json
+│   │   ├── youtube_raw.csv
+│   │   └── news_category.json
+│   │
+│   └── processed/              # Cleaned & transformed data
+│       ├── news_cleaned.csv
+│       └── youtube_cleaned.csv
+│
+├── etl/                        # ETL Layer
+│   ├── extract_news.py
+│   ├── extract_youtube.py
+│   ├── transform_news.py
+│   ├── transform_youtube.py
+│   ├── load_bigquery.py
+│   └── load_mysql.py
+│
+├── warehouse/                  # Data Warehouse Layer
+│   ├── staging.sql
+│   ├── dimension_tables.sql
+│   ├── fact_tables.sql
+│   └── data_marts.sql
+│
+├── run_pipeline.py             # Pipeline Orchestration
+├── requirements.txt            # Dependencies
+├── .gitignore                  # Security control
+└── README.md                   # Documentation
+```
 
-Used for connecting to:
+---
 
-YouTube API
+# 🔹 ETL Process
 
-Google BigQuery
+## 1️⃣ Extraction Layer
 
-MySQL
+**Files:**
+- `extract_youtube.py`
+- `extract_news.py`
 
-Step 2: Extraction Layer (etl/extract_*.py)
-Files:
+**Responsibilities:**
+- Fetch video metadata and statistics using YouTube API
+- Read news dataset from JSON
+- Store raw data in `data/raw/`
 
-extract_youtube.py
+---
 
-extract_news.py
+## 2️⃣ Transformation Layer
 
-What Happens:
+**Files:**
+- `transform_youtube.py`
+- `transform_news.py`
 
-Calls YouTube API using requests
+**Operations Performed:**
+- Remove unwanted characters
+- Convert date formats
+- Handle null values
+- Feature engineering
 
-Reads News JSON dataset
+### Engagement Score Calculation
 
-Stores raw data inside:
+```python
+engagement_score = (like_count + comment_count) / view_count
+```
 
-Step 3: Transformation Layer (etl/transform_*.py)
-Files:
+---
 
-transform_youtube.py
+## 3️⃣ Loading Layer
 
-transform_news.py
+**Files:**
+- `load_bigquery.py`
+- `load_mysql.py`
 
-Operations Performed:
+**Responsibilities:**
+- Load processed CSV files into:
+  - Google BigQuery (staging tables)
+  - MySQL database
 
-Remove unwanted characters
+---
 
-Convert date formats
+# 🏢 Data Warehouse Design (Star Schema)
 
-Drop null values
+## ⭐ Staging Tables
 
-Create new feature:
+- `stg_youtube`
+- `stg_news`
 
-Step 4: Loading Layer (etl/load_*.py)
-Files:
+---
 
-load_bigquery.py
+## ⭐ Dimension Tables
 
-load_mysql.py
+### `dim_channel`
 
-What Happens:
+- channel_id (Primary Key)  
+- channel_title  
 
-Load cleaned CSV into:
+### `dim_category`
 
-BigQuery staging tables
+- category_id (Primary Key)  
+- category_name  
 
-MySQL tables
+---
 
-DATA WAREHOUSE ARCHITECTURE (warehouse/)
-1Staging Layer (staging.sql)
+## ⭐ Fact Table
 
-Tables:
+### `fact_youtube`
 
-stg_youtube
-stg_news
+- video_id (Primary Key)  
+- channel_id (Foreign Key)  
+- category_id (Foreign Key)  
+- published_date  
+- view_count  
+- like_count  
+- comment_count  
+- engagement_score  
 
-Dimension Tables (dimension_tables.sql)
-dim_channel
-dim_category
+**Grain:** One row per video.
 
-dim_channel
- ├── channel_id (PK)
- └── channel_title
+---
 
-dim_category
- ├── category_id (PK)
- └── category_name
+# ⭐ Star Schema Model
 
- Fact Table (fact_tables.sql)
- fact_youtube
- ├── video_id (PK)
- ├── channel_id (FK)
- ├── category_id (FK)
- ├── published_date
- ├── view_count
- ├── like_count
- ├── comment_count
- └── engagement_score
-
- Data Marts (data_marts.sql)
- mart_top_videos
-mart_channel_performance
-
-STAR SCHEMA (Final Model)
+```
               dim_channel
                    |
                    |
 dim_category ---- fact_youtube
+```
+
+✔ Central measurable table  
+✔ Surrounding descriptive dimensions  
+✔ Optimized for analytical queries  
+
+---
+
+# 📊 Data Marts
+
+- `mart_top_videos` → Top 10 videos by views  
+- `mart_channel_performance` → Channel-level aggregated performance  
+
+---
+
+# 🛠️ Tech Stack
+
+- Python  
+- Pandas  
+- YouTube Data API  
+- Google BigQuery  
+- MySQL  
+- SQL  
+- Git & GitHub  
+
+---
+
+# 🔐 Security & Best Practices
+
+- Credentials excluded via `.gitignore`
+- No hardcoded secrets
+- Layered ETL design
+- Star schema modeling
+- Clean modular architecture
+
+---
+
+# 🚀 How to Run the Project
+
+## 1️⃣ Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+## 2️⃣ Configure Environment
+
+Add:
+- YouTube API Key
+- MySQL credentials
+- GCP credentials file
+
+## 3️⃣ Run the Pipeline
+
+```bash
+python run_pipeline.py
+```
+
+---
+
+# 🎯 Key Highlights
+
+- End-to-end ETL pipeline  
+- Feature engineering (Engagement Score)  
+- Star Schema Data Warehouse  
+- Cloud + relational database integration  
+- Production-ready structure  
+
+---
+
+# 🎤 Interview Explanation
+
+> Built a complete ETL pipeline that extracts YouTube and news data, transforms it using Python, loads it into BigQuery and MySQL, and designs a Star Schema data warehouse to generate media performance insights.
+
+---
+
+# 👨‍💻 Author
+
+**Bhupelli Pavankumar**  
+B.Tech – CSE (Data Science)  
+Hyderabad, Telangana  
